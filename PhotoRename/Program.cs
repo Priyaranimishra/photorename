@@ -86,17 +86,17 @@ namespace PhotoRename
 
         private static string DateToYear(string outpath, DateTime datePicture)
         {
-            return outpath + "\\" + String.Format("{0:yyyy}", datePicture) + "\\";
+            return Path.Combine(outpath,String.Format("{0:yyyy}", datePicture));
         }
 
         private static string DateToYearMonth(string outpath, DateTime datePicture)
         {
-            return DateToYear(outpath, datePicture) + String.Format("{0:yyyyMM}", datePicture) + "\\";
+            return Path.Combine(DateToYear(outpath, datePicture),String.Format("{0:yyyyMM}", datePicture));
         }
         
         private static string DateToFile(string outpath, DateTime datePicture, int i)
         {
-            return DateToYearMonth(outpath, datePicture) + String.Format("{0:yyyyMMdd_HHmmss}", datePicture) + i.ToString("D2") + ".JPG";
+            return Path.Combine(DateToYearMonth(outpath, datePicture),String.Format("{0:yyyyMMdd_HHmmss}", datePicture) + i.ToString("D2") + ".JPG");
         }
     }
 }
