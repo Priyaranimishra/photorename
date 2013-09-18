@@ -5,6 +5,8 @@ using System.Text;
 using NDesk.Options;
 using System.IO;
 using ExifLib;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace PhotoRename
 {
@@ -23,6 +25,8 @@ namespace PhotoRename
    	            { "h|?|help",   v => help = v != null },
             };
             List<string> extra = p.Parse (args);
+            inpath = @"d:\foto\fotos\telefoon\20050702\";
+            outpath = @"d:\x\";
             if (inpath == null || outpath == null || help)
             {
                 Console.WriteLine("PhotoRename.exe --inpath <path> --outpath <path>");
@@ -43,16 +47,44 @@ namespace PhotoRename
                     {
                         foreach (string image in Directory.GetFiles(inpath, "*.JPG", SearchOption.AllDirectories))
                         {
+                            var timage = image;
                             try
                             {
                                 DateTime datePicture = DateTime.MinValue;
-                                using (ExifReader reader = new ExifReader(image))
+                                try
                                 {
-                                    DateTime datePictureTaken;
-                                    if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out datePictureTaken))
+                                    using (ExifReader reader = new ExifReader(timage))
                                     {
-                                        datePicture = datePictureTaken;
+                                        DateTime datePictureTaken;
+                                        if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out datePictureTaken))
+                                        {
+                                            datePicture = datePictureTaken;
+                                        }
                                     }
+                                }
+                                catch (Exception e)
+                                {
+
+                                }
+                                if (datePicture.Equals(DateTime.MinValue))
+                                {
+                                    var date = File.GetLastWriteTime(timage);
+                                    Console.WriteLine("Can't determine date. "+timage+" Use file date: ( " + date.ToShortDateString() + " - " + date.ToShortTimeString() + " ) ? (y/n)");
+                                    if (Console.ReadKey().KeyChar.ToString().ToUpper().Equals("Y"))
+                                    {
+                                        datePicture = date;
+
+                                        Encoding _Encoding = Encoding.UTF8;
+                                        Image theImage = new Bitmap(image);
+                                        // 36867 = DateTimeOriginal
+                                        // 36868 = DateTimeDigitized
+                                        PropertyItem prop = theImage.PropertyItems[0];
+                                        SetProperty(ref prop, 36868, date.ToString("yyyy:MM:dd HH:mm:ss"));
+                                        theImage.SetPropertyItem(prop);
+                                        theImage.Save(timage+".tmp");
+                                        timage = timage + ".tmp";
+                                    }
+
                                 }
                                 if (!datePicture.Equals(DateTime.MinValue))
                                 {
@@ -70,12 +102,12 @@ namespace PhotoRename
                                     {
                                         Directory.CreateDirectory(DateToYearMonth(outpath, datePicture));
                                     }
-                                    File.Move(image, DateToFile(outpath, datePicture, i));
+                                    File.Move(timage, DateToFile(outpath, datePicture, i));
                                 }
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine(image + ": " + e.Message);
+                                Console.WriteLine(timage + ": " + e.Message);
                             }
                         }
                     }
@@ -97,6 +129,21 @@ namespace PhotoRename
         private static string DateToFile(string outpath, DateTime datePicture, int i)
         {
             return Path.Combine(DateToYearMonth(outpath, datePicture),String.Format("{0:yyyyMMdd_HHmmss}", datePicture) + i.ToString("D2") + ".JPG");
+        }
+
+        //My SetProperty code... (for ASCII property items only!)
+        //Exif 2.2 requires that ASCII property items terminate with a null (0x00).
+        private static void SetProperty(ref System.Drawing.Imaging.PropertyItem prop, int iId, string sTxt)
+        {
+            int iLen = sTxt.Length + 1;
+            byte[] bTxt = new Byte[iLen];
+            for (int i = 0; i < iLen - 1; i++)
+                bTxt[i] = (byte)sTxt[i];
+            bTxt[iLen - 1] = 0x00;
+            prop.Id = iId;
+            prop.Type = 2;
+            prop.Value = bTxt;
+            prop.Len = iLen;
         }
     }
 }
