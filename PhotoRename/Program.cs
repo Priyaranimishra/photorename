@@ -25,8 +25,8 @@ namespace PhotoRename
    	            { "h|?|help",   v => help = v != null },
             };
             List<string> extra = p.Parse (args);
-            inpath = @"d:\foto\fotos\telefoon\20050702\";
-            outpath = @"d:\x\";
+            //inpath = @"d:\foto\fotos\telefoon\20050702\";
+            //outpath = @"d:\x\";
             if (inpath == null || outpath == null || help)
             {
                 Console.WriteLine("PhotoRename.exe --inpath <path> --outpath <path>");
