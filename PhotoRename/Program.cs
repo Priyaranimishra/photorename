@@ -24,7 +24,7 @@ namespace PhotoRename
    	            { "v|verbose",  v => verbose = v != null },
    	            { "h|?|help",   v => help = v != null },
             };
-            List<string> extra = p.Parse (args);
+            p.Parse (args);
             //inpath = @"d:\foto\fotos\telefoon\20050702\";
             //outpath = @"d:\x\";
             if (inpath == null || outpath == null || help)
@@ -62,7 +62,7 @@ namespace PhotoRename
                                         }
                                     }
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
 
                                 }

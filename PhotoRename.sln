@@ -3,6 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoRename", "PhotoRename\PhotoRename.csproj", "{41FAFB7B-6FD1-4503-AA20-3FE65D26A200}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{52665494-167B-40EC-8B33-9D07BECE98A3}"
+	ProjectSection(SolutionItems) = preProject
+		gendarme.proj = gendarme.proj
+		getversion.proj = getversion.proj
+		makerelease.proj = makerelease.proj
+		stylegendarme.proj = stylegendarme.proj
+		versioner.proj = versioner.proj
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +22,11 @@ Global
 		{41FAFB7B-6FD1-4503-AA20-3FE65D26A200}.Debug|x86.Build.0 = Debug|x86
 		{41FAFB7B-6FD1-4503-AA20-3FE65D26A200}.Release|x86.ActiveCfg = Release|x86
 		{41FAFB7B-6FD1-4503-AA20-3FE65D26A200}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = PhotoRename\PhotoRename.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

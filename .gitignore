@@ -4,3 +4,11 @@ obj
 
 # mstest test results
 TestResults
+#nunit
+TestResult.xml
+
+*.suo
+*.userprefs
+
+.DS_Store
+

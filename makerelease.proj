@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+   <Import Project="$(MSBuildProjectDirectory)\getversion.proj" />
+  <PropertyGroup>
+    <Release>\release\photorename\$(Major).$(Minor).$(Build).$(Revision)\Release\</Release>
+  </PropertyGroup>
+  <ItemGroup>
+    <ReleasePackageVersioner Include="PhotoRename\bin\Release\**\*" />
+  </ItemGroup>
+  <Target Name="Build">
+    <MakeDir Directories="$(Release)" />
+    <Copy SourceFiles="@(ReleasePackageVersioner)" DestinationFolder="$(Release)\PhotoRename\%(RecursiveDir)" />
+  </Target>
+</Project>

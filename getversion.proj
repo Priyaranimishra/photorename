@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Major>1</Major>
+    <Minor>0</Minor>
+    <Build Condition=" '$(BUILD_NUMBER)' == ''">0</Build>
+    <Build Condition=" '$(BUILD_NUMBER)' != ''">$(BUILD_NUMBER)</Build>
+    <Revision Condition=" '$(SVN_REVISION)' == '' And '$(GIT_COMMIT)' == ''">0</Revision>
+    <Revision Condition=" '$(SVN_REVISION)' != ''">$(SVN_REVISION)</Revision>
+    <Revision Condition=" '$(GIT_COMMIT)' != ''">$(GIT_COMMIT)</Revision>
+  </PropertyGroup>  
+</Project>

@@ -34,9 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExifLib">
-      <HintPath>..\packages\ExifLib.1.2.4436.20486\lib\net20\ExifLib.dll</HintPath>
-    </Reference>
     <Reference Include="NDesk.Options">
       <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
     </Reference>
@@ -48,6 +45,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="ExifLib">
+      <HintPath>..\packages\ExifLib.1.6.3.0\lib\net40\ExifLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
