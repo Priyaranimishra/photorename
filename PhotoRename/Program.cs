@@ -12,6 +12,57 @@ namespace PhotoRename
 {
     class Program
     {
+        static void ProcessImage(string image, string outpath)
+        {
+            var timage = image;
+            try {
+                DateTime datePicture = DateTime.MinValue;
+                try {
+                    using (ExifReader reader = new ExifReader(timage)) {
+                        DateTime datePictureTaken;
+                        if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out datePictureTaken)) {
+                            datePicture = datePictureTaken;
+                        }
+                    }
+                }
+                catch (Exception) {
+                }
+                if (datePicture.Equals(DateTime.MinValue)) {
+                    var date = File.GetLastWriteTime(timage);
+                    Console.WriteLine("Can't determine date. " + timage + " Use file date: ( " + date.ToShortDateString() + " - " + date.ToShortTimeString() + " ) ? (y/n)");
+                    if (Console.ReadKey().KeyChar.ToString().ToUpper().Equals("Y")) {
+                        datePicture = date;
+                        Encoding _Encoding = Encoding.UTF8;
+                        Image theImage = new Bitmap(image);
+                        // 36867 = DateTimeOriginal
+                        // 36868 = DateTimeDigitized
+                        PropertyItem prop = theImage.PropertyItems[0];
+                        SetProperty(ref prop, 36868, date.ToString("yyyy:MM:dd HH:mm:ss"));
+                        theImage.SetPropertyItem(prop);
+                        theImage.Save(timage + ".tmp");
+                        timage = timage + ".tmp";
+                    }
+                }
+                if (!datePicture.Equals(DateTime.MinValue)) {
+                    int i = 1;
+                    while (File.Exists(DateToFile(outpath, datePicture, i))) {
+                        i++;
+                    }
+                    //Console.WriteLine(DateToFile(outpath, datePicture, i));
+                    if (!Directory.Exists(DateToYear(outpath, datePicture))) {
+                        Directory.CreateDirectory(DateToYear(outpath, datePicture));
+                    }
+                    if (!Directory.Exists(DateToYearMonth(outpath, datePicture))) {
+                        Directory.CreateDirectory(DateToYearMonth(outpath, datePicture));
+                    }
+                    File.Move(timage, DateToFile(outpath, datePicture, i));
+                }
+            }
+            catch (Exception e) {
+                Console.WriteLine(timage + ": " + e.Message);
+            }
+        }
+
         static void Main(string[] args)
         {
             string inpath = null;
@@ -47,68 +98,11 @@ namespace PhotoRename
                     {
                         foreach (string image in Directory.GetFiles(inpath, "*.JPG", SearchOption.AllDirectories))
                         {
-                            var timage = image;
-                            try
-                            {
-                                DateTime datePicture = DateTime.MinValue;
-                                try
-                                {
-                                    using (ExifReader reader = new ExifReader(timage))
-                                    {
-                                        DateTime datePictureTaken;
-                                        if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out datePictureTaken))
-                                        {
-                                            datePicture = datePictureTaken;
-                                        }
-                                    }
-                                }
-                                catch (Exception)
-                                {
-
-                                }
-                                if (datePicture.Equals(DateTime.MinValue))
-                                {
-                                    var date = File.GetLastWriteTime(timage);
-                                    Console.WriteLine("Can't determine date. "+timage+" Use file date: ( " + date.ToShortDateString() + " - " + date.ToShortTimeString() + " ) ? (y/n)");
-                                    if (Console.ReadKey().KeyChar.ToString().ToUpper().Equals("Y"))
-                                    {
-                                        datePicture = date;
-
-                                        Encoding _Encoding = Encoding.UTF8;
-                                        Image theImage = new Bitmap(image);
-                                        // 36867 = DateTimeOriginal
-                                        // 36868 = DateTimeDigitized
-                                        PropertyItem prop = theImage.PropertyItems[0];
-                                        SetProperty(ref prop, 36868, date.ToString("yyyy:MM:dd HH:mm:ss"));
-                                        theImage.SetPropertyItem(prop);
-                                        theImage.Save(timage+".tmp");
-                                        timage = timage + ".tmp";
-                                    }
-
-                                }
-                                if (!datePicture.Equals(DateTime.MinValue))
-                                {
-                                    int i = 1;
-                                    while ( File.Exists(DateToFile(outpath, datePicture, i)))
-                                    {
-                                        i++;
-                                    }
-                                    //Console.WriteLine(DateToFile(outpath, datePicture, i));
-                                    if (!Directory.Exists(DateToYear(outpath, datePicture)))
-                                    {
-                                        Directory.CreateDirectory(DateToYear(outpath, datePicture));
-                                    }
-                                    if (!Directory.Exists(DateToYearMonth(outpath, datePicture)))
-                                    {
-                                        Directory.CreateDirectory(DateToYearMonth(outpath, datePicture));
-                                    }
-                                    File.Move(timage, DateToFile(outpath, datePicture, i));
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(timage + ": " + e.Message);
-                            }
+                            ProcessImage(image, outpath);
+                        }
+                        foreach (string image in Directory.GetFiles(inpath, "*.jpg", SearchOption.AllDirectories))
+                        {
+                            ProcessImage(image, outpath);
                         }
                     }
                 }
