@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Binaries Include="StyleGendarme\"/>
+    <Binaries Include="PhotoRename\"/>
   </ItemGroup>
   <Target Name="Build">
     <Exec IgnoreExitCode="true" Command="stylegendarme --outxml stylegendarme.xml --inpath %(Binaries.RelativeDir)" />
